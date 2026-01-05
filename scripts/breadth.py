@@ -63,7 +63,7 @@ fig.add_trace(
 )
 
 fig.update_layout(
-    title=f"{MARKET} – Number of Stocks Above 50-Day MA",
+    title=f"{MARKET} – Percent of Stocks Above 50-Day MA",
     xaxis_title="Date",
     yaxis_title="Percent of stocks above 50D MA (%)",
     template="plotly_white",
