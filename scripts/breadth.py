@@ -8,7 +8,7 @@ from pathlib import Path
 # CONFIG
 # =========================
 MARKET = "KOSDAQ"   # "KOSPI" or "KOSDAQ"
-START_DATE = "2018-01-01"
+START_DATE = "2024-01-01"
 MA_WINDOW = 50
 OUTPUT_DIR = Path("docs")
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -23,7 +23,7 @@ price_data = {}
 
 for ticker in tqdm(tickers):
     try:
-        df = fdr.DataReader(ticker, START_DATE)
+        df = fdr.DataReader(ticker, START_DATE).tail(200)
         if len(df) >= MA_WINDOW:
             price_data[ticker] = df["Close"]
     except Exception:
