@@ -29,6 +29,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add docs/*.png
+          git add docs/*.html
           git commit -m "Update market breadth charts" || echo "No changes"
           git push
