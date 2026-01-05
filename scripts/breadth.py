@@ -7,7 +7,7 @@ from pathlib import Path
 # =========================
 # CONFIG
 # =========================
-MARKET = "KOSDAQ"   # "KOSPI" or "KOSDAQ"
+MARKET = "KOSPI"   # "KOSPI" or "KOSDAQ"
 START_DATE = "2024-01-01"
 MA_WINDOW = 50
 OUTPUT_DIR = Path("docs")
