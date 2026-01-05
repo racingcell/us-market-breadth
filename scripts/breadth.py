@@ -1,8 +1,9 @@
 import FinanceDataReader as fdr
 import pandas as pd
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from pathlib import Path
+import plotly.graph_objects as go
+
 
 # =========================
 # CONFIG
@@ -38,24 +39,22 @@ percent_above = count_above / prices.count(axis=1) * 100
 # =========================
 # SAVE PLOTS
 # =========================
-plt.figure(figsize=(12, 6))
-plt.plot(count_above)
-plt.title(f"{MARKET} – Number of Stocks Above 50D MA")
-plt.xlabel("Date")
-plt.ylabel("Count")
-plt.grid(True)
-plt.tight_layout()
-plt.savefig(OUTPUT_DIR / "breadth_count.png")
-plt.close()
+fig = go.Figure()
 
-plt.figure(figsize=(12, 6))
-plt.plot(percent_above)
-plt.title(f"{MARKET} – % of Stocks Above 50D MA")
-plt.xlabel("Date")
-plt.ylabel("Percent")
-plt.grid(True)
-plt.tight_layout()
-plt.savefig(OUTPUT_DIR / "breadth_percent.png")
-plt.close()
+fig.add_trace(
+    go.Scatter(
+        x=count_above.index,
+        y=count_above.values,
+        mode="lines",
+        name="Stocks above 50D MA"
+    )
+)
 
-print("Plots saved to docs/")
+fig.update_layout(
+    title=f"{MARKET} – Number of Stocks Above 50-Day MA",
+    xaxis_title="Date",
+    yaxis_title="Count",
+    template="plotly_white"
+)
+
+fig.write_html("docs/breadth_count.html", include_plotlyjs="cdn")
