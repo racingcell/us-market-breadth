@@ -72,7 +72,7 @@ for window in MA_WINDOWS:
         yaxis_title="Percent (%)",
         template="plotly_white"
     )
-    fig.update_xaxes(range=["2024-01-01", df.index.max()])
+    fig.update_xaxes(range=["2024-01-01", None])
     fig.write_html(f"{OUTPUT_DIR}/breadth_{window}.html")
 
 # ======================
@@ -133,7 +133,7 @@ fig_nhnl.update_layout(
     bargap=0,
     template="plotly_white"
 )
-fig.update_xaxes(range=["2024-01-01", df.index.max()])
+fig.update_xaxes(range=["2024-01-01", None])
 fig_nhnl.write_html(f"{OUTPUT_DIR}/breadth_52w_highs_lows.html")
 
 # ======================
@@ -171,5 +171,5 @@ fig_ad.update_layout(
     yaxis_title="Cumulative Net Advances",
     template="plotly_white"
 )
-fig.update_xaxes(range=["2024-01-01", df.index.max()])
+fig.update_xaxes(range=["2024-01-01", None])
 fig_ad.write_html(f"{OUTPUT_DIR}/breadth_ad_line.html")
