@@ -119,7 +119,7 @@ fig.update_layout(title="KOSPI Advance–Decline Line")
 save_fig(fig, "advance_decline.html")
 
 # =========================
-# AI SUMMARY (OPTIONAL)
+# AI SUMMARY (ALL INDICATORS)
 # =========================
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
@@ -129,21 +129,63 @@ if OPENAI_KEY:
 
         client = OpenAI(api_key=OPENAI_KEY)
 
-        latest = breadth_df.iloc[-1]
+        # --- Load latest data ---
+        breadth = pd.read_csv(
+            "docs/data/breadth_sma.csv",
+            index_col=0,
+            parse_dates=True
+        )
+        hl = pd.read_csv(
+            "docs/data/high_low_52w.csv",
+            index_col=0,
+            parse_dates=True
+        )
+        ad = pd.read_csv(
+            "docs/data/advance_decline.csv",
+            index_col=0,
+            parse_dates=True
+        )
 
+        latest_breadth = breadth.iloc[-1]
+        latest_hl = hl.iloc[-1]
+
+        ad_recent = ad["ad_line"].iloc[-5:]
+        ad_trend = (
+            "rising" if ad_recent.iloc[-1] > ad_recent.iloc[0]
+            else "falling"
+        )
+
+        # --- Build prompt ---
         prompt = f"""
-Write the summary in plain text only. Do not use Markdown, asterisks, or bullet symbols like ** or -.
+Write the summary in plain text only.
+Do not use Markdown, asterisks, or bullet symbols.
 
-You are a market strategist.
+You are a professional market strategist writing a daily KOSPI market breadth note.
 
-Write a concise daily summary of KOSPI market breadth using:
-- Percent of stocks above 20, 60, 120 and 200 day moving averages
-- Short-term vs long-term trend alignment
-- Market participation quality
-- Mark Minervini / CANSLIM style market analysis investigating if now is a good or bad time for breakouts
+Use the following indicators:
 
-Latest breadth data:
-{latest.to_dict()}
+Percent of stocks above moving averages:
+20-day: {latest_breadth['above_20']:.1f} percent
+60-day: {latest_breadth['above_60']:.1f} percent
+120-day: {latest_breadth['above_120']:.1f} percent
+200-day: {latest_breadth['above_200']:.1f} percent
+
+52-week highs minus lows:
+Latest net value: {int(latest_hl['net'])}
+
+Advance–Decline line:
+Recent 5-day trend: {ad_trend}
+
+Explain:
+- short-term versus long-term trend alignment
+- whether market participation is improving or deteriorating
+- whether breadth confirms or contradicts price strength
+- the overall market tone (constructive, neutral, or fragile)
+
+Provide an Investors Business Daily style rating for recommended market exposure (value between 0-100%)
+
+Keep the summary concise, professional, and suitable for a daily market note. 
+Write the summary first in English and afterwards in Korean.
 """
 
         response = client.chat.completions.create(
@@ -154,11 +196,11 @@ Latest breadth data:
 
         summary = response.choices[0].message.content.strip()
 
-        # Save plain text
+        # --- Save text ---
         with open("docs/ai_summary.txt", "w") as f:
             f.write(summary)
 
-        # Save HTML for GitHub Pages
+        # --- Save HTML ---
         with open("docs/ai_summary.html", "w") as f:
             f.write(f"""<!DOCTYPE html>
 <html>
@@ -182,7 +224,7 @@ Latest breadth data:
 </head>
 <body>
   <div class="box">
-    <h2>📊 Daily AI Market Breadth Summary</h2>
+    <h2>Daily AI Market Breadth Summary</h2>
     <p>{summary.replace('\n', '<br>')}</p>
   </div>
 </body>
@@ -192,3 +234,4 @@ Latest breadth data:
 
     except Exception as e:
         print("AI summary failed:", e)
+
