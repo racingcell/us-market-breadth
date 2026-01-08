@@ -123,6 +123,10 @@ save_fig(fig, "advance_decline.html")
 # =========================
 # AI SUMMARY (ALL INDICATORS)
 # =========================
+
+# =========================
+# AI SUMMARY (ALL INDICATORS)
+# =========================
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
 if OPENAI_KEY:
@@ -202,7 +206,9 @@ Write the summary first in English and afterwards in Korean.
         with open("docs/ai_summary.txt", "w") as f:
             f.write(summary)
 
-        # --- Save HTML ---
+        # --- Save HTML (safe version without backslash in f-string expression) ---
+        summary_html = summary.replace("\n", "<br>")
+
         with open("docs/ai_summary.html", "w") as f:
             f.write(f"""<!DOCTYPE html>
 <html>
@@ -227,7 +233,7 @@ Write the summary first in English and afterwards in Korean.
 <body>
   <div class="box">
     <h2>Daily AI Market Breadth Summary</h2>
-    <p>{summary.replace("\n", "<br>")}</p>
+    <p>{summary_html}</p>
   </div>
 </body>
 </html>""")
@@ -236,3 +242,5 @@ Write the summary first in English and afterwards in Korean.
 
     except Exception as e:
         print("AI summary failed:", e)
+
+
