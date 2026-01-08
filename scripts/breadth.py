@@ -121,126 +121,123 @@ save_fig(fig, "advance_decline.html")
 
 
 # =========================
-# AI SUMMARY (ALL INDICATORS)
+# AI SUMMARY (BREADTH + NEWS)
 # =========================
 
-# =========================
-# AI SUMMARY (ALL INDICATORS)
-# =========================
-OPENAI_KEY = os.getenv("OPENAI_API_KEY")
+import os
+from openai import OpenAI
+import pandas as pd
 
-if OPENAI_KEY:
-    try:
-        from openai import OpenAI
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-        client = OpenAI(api_key=OPENAI_KEY)
+# --- Load latest CSV data ---
 
-        # --- Load latest data ---
-        breadth = pd.read_csv(
-            "docs/data/breadth_sma.csv",
-            index_col=0,
-            parse_dates=True
-        )
-        hl = pd.read_csv(
-            "docs/data/high_low_52w.csv",
-            index_col=0,
-            parse_dates=True
-        )
-        ad = pd.read_csv(
-            "docs/data/advance_decline.csv",
-            index_col=0,
-            parse_dates=True
-        )
+# Breadth (SMA)
+breadth_df = pd.read_csv(
+    "docs/data/breadth_sma.csv",
+    index_col=0,
+    parse_dates=True
+)
 
-        latest_breadth = breadth.iloc[-1]
-        latest_hl = hl.iloc[-1]
+latest = breadth_df.iloc[-1]
 
-        ad_recent = ad["ad_line"].iloc[-5:]
-        ad_trend = (
-            "rising" if ad_recent.iloc[-1] > ad_recent.iloc[0]
-            else "falling"
-        )
+breadth_20 = latest["above_20"]
+breadth_60 = latest["above_60"]
+breadth_120 = latest["above_120"]
+breadth_200 = latest["above_200"]
 
-        # --- Build prompt ---
-        prompt = f"""
-Write the summary in plain text only.
-Do not use Markdown, asterisks, or bullet symbols.
+# 52-week highs / lows
+high_low = pd.read_csv(
+    "docs/data/high_low_52w.csv",
+    index_col=0,
+    parse_dates=True
+).iloc[-1]
 
-You are a professional market strategist writing a daily KOSPI market breadth note.
+# Advance–decline
+ad_line = pd.read_csv(
+    "docs/data/advance_decline.csv",
+    index_col=0,
+    parse_dates=True
+).iloc[-1]
 
-Use the following indicators:
 
-Percent of stocks above moving averages:
-20-day: {latest_breadth['above_20']:.1f} percent
-60-day: {latest_breadth['above_60']:.1f} percent
-120-day: {latest_breadth['above_120']:.1f} percent
-200-day: {latest_breadth['above_200']:.1f} percent
+breadth_summary = f"""
+Percent above moving averages:
+20D: {breadth_20:.2f}%
+60D: {breadth_60:.2f}%
+120D: {breadth_120:.2f}%
+200D: {breadth_200:.2f}%
 
-52-week highs minus lows:
-Latest net value: {int(latest_hl['net'])}
-
-Advance–Decline line:
-Recent 5-day trend: {ad_trend}
-
-Explain:
-- short-term versus long-term trend alignment
-- whether market participation is improving or deteriorating
-- whether breadth confirms or contradicts price strength
-- the overall market tone (constructive, neutral, or fragile)
-
-Provide an Investors Business Daily style rating for recommended market exposure (value between 0-100%)
-
-Keep the summary concise, professional, and suitable for a daily market note. 
-Write the summary first in English and afterwards in Korean.
+52-week highs minus lows: {high_low['net']}
+Advance–Decline line (latest): {ad_line['ad_line']}
 """
 
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.4,
-        )
 
-        summary = response.choices[0].message.content.strip()
+# --- Web search helper ---
+def get_market_news(query):
+    response = client.responses.create(
+        model="gpt-4.1-mini",
+        tools=[{"type": "web_search"}],
+        input=f"""
+Summarize the most important stock market news from the last 24 hours.
+Focus only on macro, earnings, policy, rates, or major risk events.
+Be factual. No opinions.
 
-        # --- Save text ---
-        with open("docs/ai_summary.txt", "w") as f:
-            f.write(summary)
+Query: {query}
+"""
+    )
+    return response.output_text.strip()
 
-        # --- Save HTML (safe version without backslash in f-string expression) ---
-        summary_html = summary.replace("\n", "<br>")
+# --- Fetch news ---
+us_news = get_market_news("US stock market news last 24 hours")
+kr_news = get_market_news("Korean stock market news last 24 hours")
 
-        with open("docs/ai_summary.html", "w") as f:
-            f.write(f"""<!DOCTYPE html>
-<html>
+# --- Final combined AI summary ---
+final_prompt = f"""
+You are a professional market research assistant.
+
+You are given:
+1) Quantitative market breadth indicators
+2) Current market news
+
+Your task:
+- Explain how the news context supports, contradicts, or explains the market internals
+- Do NOT predict prices
+- Do NOT give trading advice
+- Be concise, factual, and neutral
+
+MARKET BREADTH DATA:
+{breadth_summary}
+
+US MARKET NEWS:
+{us_news}
+
+KOREA MARKET NEWS:
+{kr_news}
+"""
+
+final_response = client.responses.create(
+    model="gpt-4.1-mini",
+    input=final_prompt
+)
+
+summary_text = final_response.output_text.strip()
+
+# --- Convert to HTML-safe format ---
+summary_html = summary_text.replace("\n", "<br>")
+
+# --- Write HTML file ---
+with open("docs/ai_summary.html", "w", encoding="utf-8") as f:
+    f.write(f"""<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {{
-      font-family: system-ui, -apple-system, BlinkMacSystemFont;
-      background: #f7f7f7;
-      margin: 0;
-      padding: 12px;
-    }}
-    .box {{
-      background: white;
-      border-left: 4px solid #444;
-      padding: 14px;
-      line-height: 1.5;
-    }}
-  </style>
 </head>
-<body>
-  <div class="box">
-    <h2>Daily AI Market Breadth Summary</h2>
-    <p>{summary_html}</p>
-  </div>
+<body style="font-family: system-ui; line-height:1.6; padding:14px;">
+<h2>📊 Daily AI Market Breadth Summary</h2>
+{summary_html}
 </body>
 </html>""")
 
-        print("AI summary generated successfully.")
-
-    except Exception as e:
-        print("AI summary failed:", e)
-
-
+print("AI summary with market news generated successfully.")
