@@ -189,7 +189,6 @@ Query: {query}
     return response.output_text.strip()
 
 # --- Fetch news ---
-us_news = get_market_news("US stock market news last 24 hours")
 kr_news = get_market_news("Korean stock market news last 24 hours")
 
 # --- Final combined AI summary ---
@@ -205,12 +204,11 @@ Your task:
 - Do NOT predict prices
 - Do NOT give trading advice
 - Be concise, factual, and neutral
+- Provide an outlook for the coming weeks
+- Provide the text first in English and afterwards in Korean
 
 MARKET BREADTH DATA:
 {breadth_summary}
-
-US MARKET NEWS:
-{us_news}
 
 KOREA MARKET NEWS:
 {kr_news}
@@ -235,7 +233,7 @@ with open("docs/ai_summary.html", "w", encoding="utf-8") as f:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="font-family: system-ui; line-height:1.6; padding:14px;">
-<h2>📊 Daily AI Market Breadth Summary</h2>
+<h2>Daily AI Market Breadth Summary</h2>
 {summary_html}
 </body>
 </html>""")
