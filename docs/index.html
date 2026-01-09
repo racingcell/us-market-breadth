@@ -2,41 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>KOSPI Market Breadth</title>
+  <title>S&P 500 Market Breadth</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 12px;
+      background: #ffffff;
+    }
+    h1, h2 {
+      margin-top: 24px;
+    }
+    iframe {
+      width: 100%;
+      border: none;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>KOSPI Market Breadth Dashboard</h1>
 
-  <p>
-    Percent of KOSPI stocks trading above selected moving averages.
-    Data shown from 2024 onward.
-  </p>
+  <h1>S&P 500 Market Breadth Dashboard</h1>
+
+  <!-- AI SUMMARY -->
   <iframe
-  src="ai_summary.html"
-  width="100%"
-  height="500"
-  style="border:none;">
+    src="ai_summary.html"
+    style="min-height: 260px;"
+    loading="lazy">
   </iframe>
 
-  <h2>Percent Above 20-Day SMA</h2>
-  <iframe src="breadth_20.html" width="100%" height="900" style="border:none;"></iframe>
+  <h2>% of Stocks Above 20-Day SMA</h2>
+  <iframe src="breadth_20.html" height="900" loading="lazy"></iframe>
 
-  <h2>Percent Above 60-Day SMA</h2>
-  <iframe src="breadth_60.html" width="100%" height="900" style="border:none;"></iframe>
+  <h2>% of Stocks Above 60-Day SMA</h2>
+  <iframe src="breadth_60.html" height="900" loading="lazy"></iframe>
 
-  <h2>Percent Above 120-Day SMA</h2>
-  <iframe src="breadth_120.html" width="100%" height="900" style="border:none;"></iframe>
+  <h2>% of Stocks Above 120-Day SMA</h2>
+  <iframe src="breadth_120.html" height="900" loading="lazy"></iframe>
 
-  <h2>Percent Above 200-Day SMA</h2>
-  <iframe src="breadth_200.html" width="100%" height="900" style="border:none;"></iframe>
+  <h2>% of Stocks Above 200-Day SMA</h2>
+  <iframe src="breadth_200.html" height="900" loading="lazy"></iframe>
 
   <h2>52-Week Highs Minus Lows</h2>
-  <iframe src="high_low_52w.html" width="100%" height="700" style="border:none;"></iframe>
+  <iframe src="high_low_52w.html" height="700" loading="lazy"></iframe>
 
   <h2>Advance–Decline Line</h2>
-  <iframe src="advance_decline.html" width="100%" height="700" style="border:none;"></iframe>
+  <iframe src="advance_decline.html" height="700" loading="lazy"></iframe>
 
 </body>
 </html>
