@@ -13,7 +13,7 @@ def build_summary():
 
     hl = pd.read_csv(DOCS / "high_low_52w.csv").iloc[-1, 1]
     ad = pd.read_csv(DOCS / "advance_decline.csv").iloc[-1, 1]
-
+    
     prompt = f"""
 S&P500 market breadth summary.
 
@@ -36,7 +36,7 @@ Write a concise professional market summary. No markdown. Plain text.
     )
 
     text = resp.choices[0].message.content.strip()
-
+    formatted_text = text.replace("\n", "<br>")
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -48,9 +48,10 @@ body {{ font-family: system-ui; padding: 12px; }}
 </style>
 </head>
 <body>
-{text.replace('\n', '<br>')}
+{formatted_text}
 </body>
 </html>
 """
+
 
     (DOCS / "ai_summary.html").write_text(html, encoding="utf-8")
