@@ -62,6 +62,8 @@ Write a concise professional market summary in plain text (no markdown):
 - Remain strictly factual and neutral
 - Do not predict future price movements
 - Do not give trading advice
+
+Provide the market summary first in English and then in Korean
 """
 
     final_response = client.chat.completions.create(
