@@ -2,8 +2,8 @@ name: Update US Market Breadth
 
 on:
   schedule:
-    # Runs daily at 16:30 Seoul time (07:30 UTC)
-    - cron: "30 7 * * *"
+    # ~5:30 PM Eastern Time (very reliable year-round)
+    - cron: "30 21 * * *"
   workflow_dispatch:
 
 jobs:
