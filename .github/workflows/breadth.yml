@@ -1,4 +1,4 @@
-name: Update KOSPI Market Breadth
+name: Update US Market Breadth
 
 on:
   schedule:
