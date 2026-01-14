@@ -103,13 +103,25 @@
 
     <!-- AI Summary -->
     <md-card class="card">
-      <h2>AI Market Summary</h2>
-      <iframe
+    <h2>AI Market Summary</h2>
+    <iframe
+        id="ai-summary-frame"
         src="ai_summary.html"
-        style="min-height:260px;"
-        loading="lazy">
-      </iframe>
+        loading="lazy"
+        style="width:100%; border:none; overflow:hidden;"
+        scrolling="no">
+    </iframe>
     </md-card>
+
+    <script>
+    const iframe = document.getElementById("ai-summary-frame");
+
+    iframe.addEventListener("load", () => {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        iframe.style.height = doc.body.scrollHeight + "px";
+    });
+    </script>
+
 
     <!-- Breadth Sections -->
     <md-card class="card">
