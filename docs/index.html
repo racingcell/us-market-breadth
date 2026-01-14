@@ -3,53 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <title>S&P 500 Market Breadth</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Material 3 Web Components -->
+  <script type="module" src="https://unpkg.com/@material/web/all.js"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
+    /* Material You color scheme */
+    :root {
+      --md-sys-color-primary: #4F378B;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-primary-container: #EADDFF;
+      --md-sys-color-on-primary-container: #21005E;
+
+      --md-sys-color-background: #FFFBFE;
+      --md-sys-color-on-background: #1C1B1F;
+
+      --md-sys-color-surface: #FFFBFE;
+      --md-sys-color-on-surface: #1C1B1F;
+    }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       margin: 0;
-      padding: 12px;
-      background: #ffffff;
+      font-family: Roboto, system-ui, sans-serif;
+      background: var(--md-sys-color-background);
+      color: var(--md-sys-color-on-background);
     }
-    h1, h2 {
-      margin-top: 24px;
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 24px;
     }
+
+    h1 {
+      font-size: 2.2rem;
+      margin: 24px 0 8px;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    md-card {
+      border-radius: 24px;
+      padding: 16px 16px 20px;
+    }
+
+    .card {
+      margin-bottom: 32px;
+    }
+
     iframe {
       width: 100%;
       border: none;
+      border-radius: 16px;
+      background: white;
+    }
+
+    .hero {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      border-radius: 32px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+
+    footer {
+      text-align: center;
+      opacity: 0.6;
+      padding: 32px 16px;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>S&P 500 Market Breadth Dashboard</h1>
+  <!-- Top App Bar -->
+  <md-top-app-bar>
+    <div slot="title"></div>
+  </md-top-app-bar>
 
-  <!-- AI SUMMARY -->
-  <iframe
-    src="ai_summary.html"
-    style="min-height: 260px;"
-    loading="lazy">
-  </iframe>
+  <main>
 
-  <h2>% of Stocks Above 20-Day SMA</h2>
-  <iframe src="breadth_20.html" height="900" loading="lazy"></iframe>
+    <!-- Hero / Summary -->
+    <section class="hero">
+      <h1>Market Breadth Dashboard</h1>
+      <p>
+        A high-level view of internal S&P 500 market strength using
+        moving averages, highs/lows, and advance–decline data.
+      </p>
+    </section>
 
-  <h2>% of Stocks Above 60-Day SMA</h2>
-  <iframe src="breadth_60.html" height="900" loading="lazy"></iframe>
+    <!-- AI Summary -->
+    <md-card class="card">
+      <h2>AI Market Summary</h2>
+      <iframe
+        src="ai_summary.html"
+        style="min-height:260px;"
+        loading="lazy">
+      </iframe>
+    </md-card>
 
-  <h2>% of Stocks Above 120-Day SMA</h2>
-  <iframe src="breadth_120.html" height="900" loading="lazy"></iframe>
+    <!-- Breadth Sections -->
+    <md-card class="card">
+      <h2>% of Stocks Above 20-Day SMA</h2>
+      <iframe src="breadth_20.html" height="900" loading="lazy"></iframe>
+    </md-card>
 
-  <h2>% of Stocks Above 200-Day SMA</h2>
-  <iframe src="breadth_200.html" height="900" loading="lazy"></iframe>
+    <md-card class="card">
+      <h2>% of Stocks Above 60-Day SMA</h2>
+      <iframe src="breadth_60.html" height="900" loading="lazy"></iframe>
+    </md-card>
 
-  <h2>52-Week Highs Minus Lows</h2>
-  <iframe src="high_low_52w.html" height="700" loading="lazy"></iframe>
+    <md-card class="card">
+      <h2>% of Stocks Above 120-Day SMA</h2>
+      <iframe src="breadth_120.html" height="900" loading="lazy"></iframe>
+    </md-card>
 
-  <h2>Advance–Decline Line</h2>
-  <iframe src="advance_decline.html" height="700" loading="lazy"></iframe>
+    <md-card class="card">
+      <h2>% of Stocks Above 200-Day SMA</h2>
+      <iframe src="breadth_200.html" height="900" loading="lazy"></iframe>
+    </md-card>
+
+    <md-card class="card">
+      <h2>52-Week Highs Minus Lows</h2>
+      <iframe src="high_low_52w.html" height="700" loading="lazy"></iframe>
+    </md-card>
+
+    <md-card class="card">
+      <h2>Advance–Decline Line</h2>
+      <iframe src="advance_decline.html" height="700" loading="lazy"></iframe>
+    </md-card>
+
+  </main>
+
+  <footer>
+    Material 3 Expressive • Static • GitHub Pages Ready
+  </footer>
 
 </body>
 </html>
